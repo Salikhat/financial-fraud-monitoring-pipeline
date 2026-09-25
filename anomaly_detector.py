@@ -24,7 +24,7 @@ def detect_fraud_anomalies(clean_path="data/cleaned_transactions.csv", output_pa
     df = df.set_index('timestamp')
     
     # Track transactions in a rolling 5-minute window grouped by user
-    rolling_count = df.groupby('user_id')['transaction_id'].rolling('5T').count()
+    rolling_count = df.groupby('user_id')['transaction_id'].rolling('5min').count()
     df = df.reset_index()
     df['rolling_5min_count'] = rolling_count.values
     
