@@ -22,6 +22,18 @@ Applies a parallel analysis framework to isolate high-risk behavior:
 1. **Volumetric Outlier Vector (Z-Score)**: Measures transaction amounts against standard deviation thresholds. Transactions drifting beyond **3 standard deviations** above a user's normal spending baseline are instantly isolated as high-volume risks.
 2. **Velocity Blast Vector (Rolling Window)**: Implements a rolling time-delta calculation to flag automation spikes. If a user exceeds a threshold of **3 independent transactions within any 5-minute window**, the profile is flagged for potential credential stuffing or script exploitation.
 
+## 🚀 Execution Guide
+To run the entire financial pipeline on your machine with a single keystroke, execute the automated orchestration script:
+
+```bash
+# Make the automation script executable (only needed once)
+chmod +x run_pipeline.sh
+
+# Execute the entire end-to-end data pipeline
+./run_pipeline.sh
+```
+
+This single command triggers the data generator matrix, cleans the structural logs, runs the statistical fraud engines, and prints out the executive summary dashboard.
 ---
 
 ## 📂 Repository Structure
