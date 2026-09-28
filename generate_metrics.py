@@ -5,6 +5,7 @@ import pandas as pd
 def generate_executive_dashboard(
     clean_path="data/cleaned_transactions.csv",
     anomaly_path="data/flagged_anomalies.csv",
+    excel_output_path="data/executive_risk_report.xlsx",
 ):
     print("📊 Compiling executive fraud metrics dashboard...")
 
@@ -83,6 +84,55 @@ def generate_executive_dashboard(
                 f"{user:<15} | {int(row['flagged_count']):<14} | ${row['total_risk_amount']:,.2f}"
             )
         print("=" * 55 + "\n")
+
+    # 🚀 --- NEW EXCEL AUTOMATION LAYER --- 🚀
+    print("💾 Generating multi-sheet executive Excel workbook asset...")
+
+    # Dataframe 1: High Level Summary KPIs
+    summary_data = {
+        "Metric Classification": [
+            "Total Monitored Transactions",
+            "Total Gross Volume Monitored",
+            "Flagged Fraud Incidents",
+            "Total Cash At Risk (Exposed)",
+            "Incident Rate (By Count)",
+            "Financial Exposure Rate",
+            "Total High-Risk User Accounts",
+        ],
+        "Value": [
+            total_transactions,
+            total_volume,
+            total_fraud_incidents,
+            total_fraud_volume,
+            f"{fraud_percent_by_count:.2f}%",
+            f"{fraud_percent_by_value:.2f}%",
+            high_risk_users_count,
+        ],
+    }
+    df_summary_excel = pd.DataFrame(summary_data)
+
+    # Dataframe 2: Account Level Exposures (Resetting index for Excel columns)
+    df_accounts_excel = user_risk.reset_index().rename(
+        columns={
+            "user_id": "User Account ID",
+            "flagged_count": "Flagged Transaction Count",
+            "total_risk_amount": "Total Exposed Capital ($)",
+        }
+    )
+
+    # Write securely to a multi-sheet spreadsheet architecture
+    os.makedirs(os.path.dirname(excel_output_path), exist_ok=True)
+    with pd.ExcelWriter(excel_output_path, engine="openpyxl") as writer:
+        df_summary_excel.to_excel(
+            writer, sheet_name="KPI Summary", index=False
+        )
+        df_accounts_excel.to_excel(
+            writer, sheet_name="Account Risk Profiles", index=False
+        )
+
+    print(
+        f"✅ Executive Excel ledger successfully written to: {excel_output_path}\n"
+    )
 
 
 if __name__ == "__main__":
